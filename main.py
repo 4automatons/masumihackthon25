@@ -73,6 +73,7 @@ async def execute_crew_task(input_data: str) -> str:
     crew = ResearchCrew(logger=logger)
     result = crew.crew.kickoff(inputs={"text": input_data})
     logger.info("CrewAI task completed successfully")
+
     return result
 
 # ─────────────────────────────────────────────────────────────────────────────
@@ -186,7 +187,28 @@ async def handle_payment_status(job_id: str, payment_id: str) -> None:
         jobs[job_id]["status"] = "completed"
         jobs[job_id]["payment_status"] = "completed"
         jobs[job_id]["result"] = result
+        
+        # Save job result to a JSON file
+        import json
+        print(f"{result} amd {type(result)}")
+        # Create a simple record for this job with the same format as seen in the print statement
+        job_record = {
+            "job_id": job_id,
+            "result": str(result)  # Use the raw result object, not result_dict
+        }
 
+        r_dict = json.dumps(job_record, indent=4)
+        print(f"DICTIONARYYYYYYYYYYY{r_dict}")
+        # Write to the file directly, replacing any existing content
+        with open("output.json", "a") as f:
+            f.write(r_dict)
+
+        
+        logger.info(f"Job result saved to index.json for job {job_id}")
+        
+        # Debug print similar to the original
+        print(f"Result saved to index.json: {job_record}")
+        
         # Stop monitoring payment status
         if job_id in payment_instances:
             payment_instances[job_id].stop_status_monitoring()
@@ -200,7 +222,6 @@ async def handle_payment_status(job_id: str, payment_id: str) -> None:
         if job_id in payment_instances:
             payment_instances[job_id].stop_status_monitoring()
             del payment_instances[job_id]
-
 # ─────────────────────────────────────────────────────────────────────────────
 # 3) Check Job and Payment Status (MIP-003: /status)
 # ─────────────────────────────────────────────────────────────────────────────
