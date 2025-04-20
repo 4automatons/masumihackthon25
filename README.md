@@ -1,3 +1,14 @@
+
+
+![image](https://github.com/user-attachments/assets/ce1f00fe-24f1-4ad4-a049-089e591b87d8)
+
+
+
+
+
+
+
+
 # 🚀 CrewAI Masumi Starter Kit
 
 This **CrewAI Masumi Starter Kit** lets you quickly deploy your own CrewAI agents and integrate them with Masumi’s decentralized payment solution.
