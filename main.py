@@ -6,7 +6,7 @@ from fastapi import FastAPI, Query, HTTPException
 from pydantic import BaseModel, Field, field_validator
 from masumi.config import Config
 from masumi.payment import Payment, Amount
-from crew_definition import ResearchCrew
+from crew_definition import HypothesisCrew, ScriptCrew, ResearchCrew
 from logging_config import setup_logging
 
 # Configure logging
@@ -70,11 +70,19 @@ class ProvideInputRequest(BaseModel):
 async def execute_crew_task(input_data: str) -> str:
     """ Execute a CrewAI task with Research and Writing Agents """
     logger.info(f"Starting CrewAI task with input: {input_data}")
-    crew = ResearchCrew(logger=logger)
-    result = crew.crew.kickoff(inputs={"text": input_data})
+    hypothsis_crew = HypothesisCrew(logger=logger)
+    hypothesis_result = hypothsis_crew.crew.kickoff(inputs={"text": input_data})
+
+    script_crew = ScriptCrew(str(hypothesis_result),logger=logger)
+    script_result= script_crew.crew.kickoff(inputs={"text": str(hypothesis_result)})
+
+    research_crew = ResearchCrew(str(script_result),logger=logger)
+    final_result= research_crew.crew.kickoff(inputs={"text": str(script_result)})
+
+
     logger.info("CrewAI task completed successfully")
 
-    return result
+    return final_result
 
 # ─────────────────────────────────────────────────────────────────────────────
 # 1) Start Job (MIP-003: /start_job)
@@ -171,7 +179,6 @@ async def handle_payment_status(job_id: str, payment_id: str) -> None:
         
         # Update job status to running
         jobs[job_id]["status"] = "running"
-        logger.info(f"Input data: {jobs[job_id]["input_data"]}")
 
         # Execute the AI task
         result = await execute_crew_task(jobs[job_id]["input_data"])

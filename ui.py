@@ -1,3 +1,4 @@
+
 import tkinter as tk
 from tkinter import scrolledtext, messagebox, ttk
 import requests
@@ -29,6 +30,7 @@ class JobStarterApp:
         # Configure the main frame
         main_frame = tk.Frame(root, bg="#f0f0f0")
         main_frame.pack(fill="both", expand=True, padx=20, pady=20)
+
         
         # Create tabs
         self.tab_control = ttk.Notebook(main_frame)
@@ -36,15 +38,19 @@ class JobStarterApp:
         self.job_tab = tk.Frame(self.tab_control, bg="#f0f0f0")
         self.payment_tab = tk.Frame(self.tab_control, bg="#f0f0f0")
         self.status_tab = tk.Frame(self.tab_control, bg="#f0f0f0")
+        self.junk_tab = tk.Frame(self.tab_control, bg="#f0f0f0")
+        self.result_tab = tk.Frame(self.tab_control, bg="#f0f0f0")
         
         self.tab_control.add(self.job_tab, text="Start Job")
         self.tab_control.add(self.payment_tab, text="Payment Settings")
         self.tab_control.add(self.status_tab, text="Check Status")
+        self.tab_control.add(self.junk_tab, text="Junk Data")
+        self.tab_control.add(self.result_tab, text="Results")
         
         self.tab_control.pack(fill="both", expand=True)
         
         # Title - Job Tab
-        title_label = tk.Label(self.job_tab, text="API Job Starter", font=("Arial", 16, "bold"), bg="#f0f0f0")
+        title_label = tk.Label(self.job_tab, text="Antidote", font=("Arial", 16, "bold"), bg="#f0f0f0")
         title_label.pack(pady=(10, 20))
         
         # Input section
@@ -58,6 +64,12 @@ class JobStarterApp:
         payment_frame = tk.LabelFrame(self.payment_tab, text="API Configuration", bg="#f0f0f0", font=("Arial", 10, "bold"))
         payment_frame.pack(fill="x", padx=10, pady=10)
         
+        # Junk Data Tab: 
+        #self.root = tk.Label(self.junk_tab, text=self.get_text_data(), font=("Ubuntu Mono", 14, "bold")).pack(pady=50)
+
+        # Result Tab:
+        #self.root = tk.Label(self.result_tab, text=self.get_json_data(), font=("Ubuntu Mono", 14, "bold")).pack(pady=50)
+
         # Payment URL
         tk.Label(payment_frame, text="Payment API URL:", bg="#f0f0f0").grid(row=0, column=0, sticky="w", padx=10, pady=5)
         self.payment_url = tk.Entry(payment_frame, width=50)
@@ -100,7 +112,7 @@ class JobStarterApp:
         tk.Label(input_frame, text="Input Text:", bg="#f0f0f0").grid(row=1, column=0, sticky="nw", padx=10, pady=5)
         self.input_text = scrolledtext.ScrolledText(input_frame, width=50, height=5)
         self.input_text.grid(row=1, column=1, sticky="w", padx=10, pady=5)
-        self.input_text.insert(tk.END, "Write a story about a robot learning to paint")
+        self.input_text.insert(tk.END, "Write a hypothesis about the data")
         
         # Server URL
         tk.Label(input_frame, text="Server URL:", bg="#f0f0f0").grid(row=2, column=0, sticky="w", padx=10, pady=5)
@@ -238,6 +250,8 @@ class JobStarterApp:
         self.configure_text_tags(self.output_text)
         self.configure_text_tags(self.status_output)
     
+
+
     def on_status_type_change(self):
         """Change the UI based on selected status type"""
         status_type = self.status_type_var.get()
